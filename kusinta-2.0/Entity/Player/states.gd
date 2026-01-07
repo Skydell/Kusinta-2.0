@@ -8,7 +8,5 @@ extends Node
 @onready var Fall = $Fall
 @onready var WallJump = $WallJump
 @onready var WallSlide = $WallSlide
-@onready var WallUnmagnet = $WallUnmagnet
-@onready var WallSlideCharge = $WallSlideCharge
 @onready var LedgeGrab = $LedgeGrab
 @onready var LedgeClimb = $LedgeClimb

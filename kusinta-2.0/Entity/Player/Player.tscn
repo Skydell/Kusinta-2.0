@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://cmtwed4vjiajx"]
+[gd_scene load_steps=26 format=3 uid="uid://cmtwed4vjiajx"]
 
 [ext_resource type="Script" uid="uid://dse5ohbrgdlm1" path="res://Entity/Player/player.gd" id="1_oklip"]
 [ext_resource type="Texture2D" uid="uid://crfpct4ukxiuu" path="res://Resources/Character base.png" id="1_v6stv"]
@@ -11,14 +11,11 @@
 [ext_resource type="Script" uid="uid://2t6gbt1b1yen" path="res://Entity/Player/States/fallState.gd" id="8_3xy24"]
 [ext_resource type="Script" uid="uid://dxobvkcamf4o7" path="res://Entity/Player/States/wallJumpState.gd" id="10_awppf"]
 [ext_resource type="Script" uid="uid://61lf2dkximkx" path="res://Entity/Player/States/wallSlideState.gd" id="11_jyegj"]
-[ext_resource type="Script" uid="uid://48v02c2k81gc" path="res://Entity/Player/wallUnmagnetState.gd" id="12_2iid8"]
-[ext_resource type="Script" uid="uid://crd3sicpng6s8" path="res://Entity/Player/wallSlideChargeState.gd" id="13_m4cv6"]
 [ext_resource type="Script" uid="uid://gyq7am8dpfx" path="res://Entity/Player/States/ledgeGrabState.gd" id="14_krolp"]
 [ext_resource type="Script" uid="uid://b863ei4631hwr" path="res://Entity/Player/States/ledgeClimbState.gd" id="15_u55sb"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_oklip"]
-radius = 4.0
-height = 20.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m4cv6"]
+size = Vector2(8, 22)
 
 [sub_resource type="Animation" id="Animation_s8ud5"]
 resource_name = "Fall"
@@ -237,8 +234,8 @@ hframes = 8
 vframes = 29
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2(0, 6)
-shape = SubResource("CapsuleShape2D_oklip")
+position = Vector2(0, 5)
+shape = SubResource("RectangleShape2D_m4cv6")
 
 [node name="Animator" type="AnimationPlayer" parent="."]
 libraries = {
@@ -247,6 +244,46 @@ libraries = {
 
 [node name="Camera" type="Camera2D" parent="."]
 position_smoothing_enabled = true
+
+[node name="Raycasts" type="Node2D" parent="."]
+
+[node name="LedgeGrab" type="Node2D" parent="Raycasts"]
+
+[node name="LedgeRightLower" type="RayCast2D" parent="Raycasts/LedgeGrab"]
+position = Vector2(4.01, -1)
+target_position = Vector2(1, 0)
+
+[node name="LedgeRightUpper" type="RayCast2D" parent="Raycasts/LedgeGrab"]
+position = Vector2(4.01, -6)
+target_position = Vector2(9, 0)
+
+[node name="LedgeLeftLower" type="RayCast2D" parent="Raycasts/LedgeGrab"]
+position = Vector2(-4.01, -1)
+target_position = Vector2(-1, 0)
+
+[node name="LedgeLeftUpper" type="RayCast2D" parent="Raycasts/LedgeGrab"]
+position = Vector2(-4.01, -6)
+target_position = Vector2(-9, 0)
+
+[node name="WallJump" type="Node2D" parent="Raycasts"]
+
+[node name="WallJumpLeft" type="RayCast2D" parent="Raycasts/WallJump"]
+position = Vector2(-4.01, 12)
+target_position = Vector2(-3, 0)
+
+[node name="WallJumpRight" type="RayCast2D" parent="Raycasts/WallJump"]
+position = Vector2(4.01, 12)
+target_position = Vector2(3, 0)
+
+[node name="WallSlide" type="Node2D" parent="Raycasts"]
+
+[node name="WallSlideLeft" type="RayCast2D" parent="Raycasts/WallSlide"]
+position = Vector2(-4.01, 0)
+target_position = Vector2(-3, 0)
+
+[node name="WallSlideRight" type="RayCast2D" parent="Raycasts/WallSlide"]
+position = Vector2(4.01, 0)
+target_position = Vector2(3, 0)
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("3_rj2x4")
@@ -275,12 +312,6 @@ script = ExtResource("10_awppf")
 [node name="WallSlide" type="Node" parent="StateMachine"]
 script = ExtResource("11_jyegj")
 
-[node name="WallUnmagnet" type="Node" parent="StateMachine"]
-script = ExtResource("12_2iid8")
-
-[node name="WallSlideCharge" type="Node" parent="StateMachine"]
-script = ExtResource("13_m4cv6")
-
 [node name="LedgeGrab" type="Node" parent="StateMachine"]
 script = ExtResource("14_krolp")
 
@@ -298,45 +329,7 @@ one_shot = true
 [node name="WallJumpBufferTimer" type="Timer" parent="Timers"]
 one_shot = true
 
-[node name="Raycasts" type="Node2D" parent="."]
-
-[node name="LedgeGrab" type="Node2D" parent="Raycasts"]
-visible = false
-
-[node name="LedgeRightLower" type="RayCast2D" parent="Raycasts/LedgeGrab"]
-position = Vector2(1, -1)
-target_position = Vector2(4, 0)
-
-[node name="LedgeRightUpper" type="RayCast2D" parent="Raycasts/LedgeGrab"]
-position = Vector2(1, -6)
-target_position = Vector2(12, 0)
-
-[node name="LedgeLeftLower" type="RayCast2D" parent="Raycasts/LedgeGrab"]
-position = Vector2(-1, -1)
-target_position = Vector2(-4, 0)
-
-[node name="LedgeLeftUpper" type="RayCast2D" parent="Raycasts/LedgeGrab"]
-position = Vector2(-1, -6)
-target_position = Vector2(-12, 0)
-
-[node name="WallJump" type="Node2D" parent="Raycasts"]
-
-[node name="WallKickLeft" type="RayCast2D" parent="Raycasts/WallJump"]
-position = Vector2(-3, 12)
-target_position = Vector2(-4, 0)
-
-[node name="WallKickRight" type="RayCast2D" parent="Raycasts/WallJump"]
-position = Vector2(3, 12)
-target_position = Vector2(4, 0)
-
-[node name="WallSlide" type="Node2D" parent="Raycasts"]
-
-[node name="WallSlideLeft" type="RayCast2D" parent="Raycasts/WallSlide"]
-position = Vector2(-3, 0)
-target_position = Vector2(-4, 0)
-
-[node name="WallSlideRight" type="RayCast2D" parent="Raycasts/WallSlide"]
-position = Vector2(3, 0)
-target_position = Vector2(4, 0)
+[node name="SlideStaminaTimer" type="Timer" parent="Timers"]
+one_shot = true
 
 [connection signal="animation_finished" from="Animator" to="StateMachine/LedgeClimb" method="_on_animator_animation_finished"]

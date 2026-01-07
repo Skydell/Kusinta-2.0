@@ -23,7 +23,7 @@ func Update(delta: float):
 	# FALL -> WALL JUMP
 	Player.HandleWallJump()
 	# FALL -> WALL SLIDE
-	# Player.HandleWallSlide()
+	Player.HandleWallSlide()
 	# Falls -> LEDGE GRAB
 	Player.HandleLedgeGrab()
 

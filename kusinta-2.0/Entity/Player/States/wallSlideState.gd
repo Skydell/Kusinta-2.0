@@ -5,9 +5,9 @@ var lastWallDirection
 
 func EnterState():
 	Name = "WallSlide"
+	Player.SlideStaminaTimer.start(Player.WALLSLIDESTAMINATIME)
 	Player.GetWallDirection()
 	lastWallDirection = Player.wallDirection
-	#print(Player.CoyoteTimer.time_left)
 	Player.jumps = 0
 	# Move the player to the wall to avoid space between player and wall
 	if (Player.wallDirection == Vector2.LEFT):
@@ -16,16 +16,15 @@ func EnterState():
 		Player.velocity.x = wallMagnetSpeed
 
 func ExitState():
-	pass
+	Player.CoyoteTimer.start(Player.WALLJUMPCOYOTETIME)
+	Player.SlideStaminaTimer.stop()
 
 func Draw():
 	pass
 
 func Update(delta: float):
 	HandleWallSlideMouvement()
-	#HandleJumpsFromWall()
 	Player.HandleWallJump()
-	#Player.HandleWallSlideCharge()
 	Player.HandleLanding()
 	HandleWallFallFromOppositeDirection()
 	HandleAnimations()
@@ -33,7 +32,11 @@ func Update(delta: float):
 func HandleWallSlideMouvement():
 	if ((Player.RCWallSlideTopRight.is_colliding() and Player.RCWallJumpBottonRight.is_colliding())	
 	or (Player.RCWallSlideTopLeft.is_colliding() and Player.RCWallJumpBottomLeft.is_colliding())):
-		Player.velocity.y = Player.WALLSLIDESPEED
+		if (Player.SlideStaminaTimer.time_left > 0):
+			Player.velocity.y = Player.WALLSLIDESPEED
+		else:
+			Player.global_position.x += 4 * Player.wallDirection.x * -1
+			Player.ChangeState(States.Fall)
 
 func HandleWallFallFromOppositeDirection():
 	if (!Player.RCWallJumpBottonRight.is_colliding() and !Player.RCWallJumpBottomLeft.is_colliding()):
@@ -41,7 +44,8 @@ func HandleWallFallFromOppositeDirection():
 	
 	if ((Player.RCWallSlideTopRight.is_colliding() and Player.RCWallJumpBottonRight.is_colliding() and Player.keyLeft)
 	or (Player.RCWallSlideTopLeft.is_colliding() and Player.RCWallJumpBottomLeft.is_colliding() and Player.keyRight)):
-		Player.ChangeState(States.WallUnmagnet)
+		Player.global_position.x += 4 * Player.wallDirection.x * -1
+		Player.ChangeState(States.Fall)
 
 func HandleAnimations():
 	Player.Animator.play("WallSlide")

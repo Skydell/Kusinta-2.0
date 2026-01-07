@@ -11,10 +11,11 @@ class_name PlayerCharacter extends CharacterBody2D
 @onready var JumpBufferTimer = $Timers/JumpBufferTimer
 @onready var CoyoteTimer = $Timers/CoyoteTimer
 @onready var WallJumpBufferTimer = $Timers/WallJumpBufferTimer
+@onready var SlideStaminaTimer = $Timers/SlideStaminaTimer
 
 @onready var Raycasts = $Raycasts
-@onready var RCWallJumpBottomLeft = $Raycasts/WallJump/WallKickLeft
-@onready var RCWallJumpBottonRight = $Raycasts/WallJump/WallKickRight
+@onready var RCWallJumpBottomLeft = $Raycasts/WallJump/WallJumpLeft
+@onready var RCWallJumpBottonRight = $Raycasts/WallJump/WallJumpRight
 @onready var RCWallSlideTopLeft = $Raycasts/WallSlide/WallSlideLeft
 @onready var RCWallSlideTopRight = $Raycasts/WallSlide/WallSlideRight
 
@@ -37,20 +38,17 @@ const GRAVITYJUMP = 600
 const GRAVITYFALL = 750
 const GRAVITYKICK = 800
 const MAXFALLVELOCITY = 400
-const WALLSLIDESPEED = 60
-const WALLSLIDESPEEDBEFOREJUMP = 15
+const WALLSLIDESPEED = 40
 const JUMPSPEED = -260
 const VARIABLEJUMPMULTIPLIER = 0.6
 const MAXNUMBEROFJUMPS = 1
 const JUMPBUFFERTIME = 0.15 # 9 frames: FPS / (desired frames) = time in seconds
-const COYOTETIME = 0.15 # 9 frames
-const WALLJUMPCOYOTETIME = 0.15
-const WALLJUMPBUFFERTIME = 0.5
+const COYOTETIME = 0.1  # 6 frames
+const WALLJUMPCOYOTETIME = 0.15 # 9 frames: FPS / (desired frames) = time in seconds
+const WALLSLIDESTAMINATIME = 0.8
 
-const WALLKICKACCELERATION = 40
-const WALLKICKDECELERATION = 50
 const WALLJUMPYSPEEDPEAK = 0 # Y speed at which the wall jump will end and change to fall
-const WALLJUMPVELOCITY = -250
+const WALLJUMPVELOCITY = -220
 const WALLJUMPHSPEED = 120
 
 var moveSpeed = RUNSPEED
@@ -107,7 +105,6 @@ func ChangeState(newState: PlayerState):
 		previousState.ExitState()
 		currentState.EnterState()
 		# Not sure why we need to return here
-		print("Changing from state: "+previousState.Name+" to state: "+currentState.Name)
 		return
 
 func UpdateRaycasts():
@@ -120,7 +117,6 @@ func UpdateRaycasts():
 #region Custom Functions
 
 func GetWallDirection():
-	#print("Colliding left : "+str(RCWallJumpBottomLeft.is_colliding())+" Colliding right : "+ str(RCWallJumpBottonRight.is_colliding()))
 	if (RCWallJumpBottonRight.is_colliding()):
 		wallDirection = Vector2.RIGHT
 	elif (RCWallJumpBottomLeft.is_colliding()):
@@ -165,7 +161,6 @@ func HandleLanding():
 func HandleWallSlide():
 	# TODO rewrite this methode removing code from wall direction
 	GetWallDirection()
-	#print("try changing to wall Slide"+str(wallDirection==Vector2.ZERO)+"press left"+str(keyLeft))
 	if ((wallDirection == Vector2.LEFT
 	and RCWallSlideTopLeft.is_colliding() 	
 	and RCWallJumpBottomLeft.is_colliding()) or 	
@@ -182,8 +177,6 @@ func HandleJump():
 				JumpBufferTimer.stop()
 				ChangeState(States.Jump)
 	else:
-		#print("Air jump with keyPressed Left : "+str(KeyLeftPressed) + " Key Pressed RIght : "+ str(KeyRightPressed) + " wallDirection : "+str(wallDirection))
-		#print("Air jump with timer left:" + str(CoyoteTimer.time_left)+ " jumps: "+str(jumps) +" and press jump: "+str(KeyJumpPressed))
 		# Handle air jumps if Max Jumps > 1 (first jump from ground)
 		if ((jumps < MAXNUMBEROFJUMPS) and (jumps > 0) and KeyJumpPressed):
 			jumps += 1
@@ -207,16 +200,18 @@ func HandleJumpBuffer():
 
 func HandleWallJump():
 	GetWallDirection()
-	if ((KeyJumpPressed or JumpBufferTimer.time_left > 0) 
-	and ((wallDirection == Vector2.RIGHT and keyLeft) 
-	or (wallDirection == Vector2.LEFT and keyRight))):
-		ChangeState(States.Jump)
-
-func HandleWallSlideCharge():
-	GetWallDirection()
-	if ((KeyJumpPressed or JumpBufferTimer.time_left > 0) 
-	and (!keyLeft and !keyRight and wallDirection != Vector2.ZERO)):
-		ChangeState(States.WallSlideCharge)
+	# If we are against a wall
+	if (wallDirection != Vector2.ZERO):
+		if (KeyJumpPressed or JumpBufferTimer.time_left > 0 and jumps < MAXNUMBEROFJUMPS):
+			JumpBufferTimer.stop()
+			jumps += 1
+			ChangeState(States.WallJump)
+	# If we are in the air
+	else:
+		if (KeyJumpPressed and CoyoteTimer.time_left > 0 and jumps < MAXNUMBEROFJUMPS):
+			CoyoteTimer.stop()
+			jumps += 1
+			ChangeState(States.WallJump)
 
 func HandleLedgeGrab(): 
 	if (RCLedgeGrabLeftLower.is_colliding() and !RCLedgeGrabLeftUpper.is_colliding()):
@@ -234,7 +229,6 @@ func HandleGravity(delta, gravity: float = GRAVITYJUMP):
 		# Limit falling speed to a max
 		if (velocity.y > MAXFALLVELOCITY):
 			velocity.y = MAXFALLVELOCITY
-		#print("After gravity :"+str(velocity.y))
 
 func HandleFlipH():
 	# Flip Sprite

@@ -3,7 +3,6 @@ extends PlayerState
 func EnterState():
 	Name = "Jump"
 	Player.velocity.y = Player.jumpSpeed
-	#print("Jump speed = "+str(Player.velocity.y))
 
 func ExitState():
 	pass
@@ -12,16 +11,13 @@ func Draw():
 	pass
 
 func Update(delta: float):
-	#print("Jump speed During update = "+str(Player.velocity.y))
 	# Jump mouvement
 	Player.HandleGravity(delta)
 	Player.HorinzontalMouvement()
 	# JUMP -> JUMPPEAK
 	HandleJumpToFall()
 	# JUMP -> WALL SLIDE
-	#Player.HandleWallSlide()
 	Player.HandleWallJump()
-	#HandleGameSlowDown()
 	HandleAnimations()
 
 func HandleJumpToFall():
@@ -33,6 +29,7 @@ func HandleJumpToFall():
 		Player.velocity.y *= Player.VARIABLEJUMPMULTIPLIER
 		Player.ChangeState(States.JumpPeak)
 
+# KEPT for example of slowing down game for future shoot while jumping
 #func HandleGameSlowDown():
 	#if (Player.KeySpace):
 		#if (Engine.time_scale != 0.5):
