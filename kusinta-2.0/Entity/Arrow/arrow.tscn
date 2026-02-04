@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7a15vqvij1sc"]
+
+[ext_resource type="Script" uid="uid://dqo2ip2iddhtb" path="res://Entity/Arrow/arrow.gd" id="1_du3uu"]
+[ext_resource type="Texture2D" uid="uid://d1o8h7mfde22l" path="res://Resources/BasicArrow.png" id="2_du3uu"]
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_i8dt4"]
+points = PackedVector2Array(4, -3, 7, -1, 7, 0, 4, 2)
+
+[node name="Arrow" type="CharacterBody2D"]
+collision_layer = 4
+script = ExtResource("1_du3uu")
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+position = Vector2(-7, 0)
+shape = SubResource("ConvexPolygonShape2D_i8dt4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_du3uu")
+offset = Vector2(-7, 0)
+
+[node name="StateMachine" type="Node" parent="."]

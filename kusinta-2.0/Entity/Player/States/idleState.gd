@@ -17,6 +17,8 @@ func Update(delta: float):
 	Player.HandleJump()
 	# IDLE -> RUN
 	HandleRun()
+	# IDLE -> Shoot
+	HanleShootCharge()
 
 	HandleAnimations()
 
@@ -28,4 +30,8 @@ func HandleRun():
 func HandleAnimations():
 	Player.Animator.play("Idle")
 	Player.HandleFlipH()
+	
+func HanleShootCharge():
+	if (Player.KeyMouseLeftClickHold && Player.remainingArrowsInQuiver > 0):
+		Player.ChangeState(States.ChargeShot)
 	

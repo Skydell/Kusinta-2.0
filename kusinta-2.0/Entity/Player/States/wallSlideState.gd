@@ -5,7 +5,6 @@ var lastWallDirection
 
 func EnterState():
 	Name = "WallSlide"
-	Player.SlideStaminaTimer.start(Player.WALLSLIDESTAMINATIME)
 	Player.GetWallDirection()
 	lastWallDirection = Player.wallDirection
 	Player.jumps = 0
@@ -17,7 +16,6 @@ func EnterState():
 
 func ExitState():
 	Player.CoyoteTimer.start(Player.WALLJUMPCOYOTETIME)
-	Player.SlideStaminaTimer.stop()
 
 func Draw():
 	pass
@@ -32,11 +30,7 @@ func Update(delta: float):
 func HandleWallSlideMouvement():
 	if ((Player.RCWallSlideTopRight.is_colliding() and Player.RCWallJumpBottonRight.is_colliding())	
 	or (Player.RCWallSlideTopLeft.is_colliding() and Player.RCWallJumpBottomLeft.is_colliding())):
-		if (Player.SlideStaminaTimer.time_left > 0):
-			Player.velocity.y = Player.WALLSLIDESPEED
-		else:
-			Player.global_position.x += 4 * Player.wallDirection.x * -1
-			Player.ChangeState(States.Fall)
+		Player.velocity.y = Player.WALLSLIDESPEED
 
 func HandleWallFallFromOppositeDirection():
 	if (!Player.RCWallJumpBottonRight.is_colliding() and !Player.RCWallJumpBottomLeft.is_colliding()):

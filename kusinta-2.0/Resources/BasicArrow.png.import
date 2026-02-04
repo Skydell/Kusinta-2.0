@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwrjhqd00mi4k"
-path="res://.godot/imported/Character base.png-22db1b4e902a5cfc93fe8407e0ce4abf.ctex"
+uid="uid://d1o8h7mfde22l"
+path="res://.godot/imported/BasicArrow.png-956060f79278698666ede6b7dac59203.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/Character base.png"
-dest_files=["res://.godot/imported/Character base.png-22db1b4e902a5cfc93fe8407e0ce4abf.ctex"]
+source_file="res://Resources/BasicArrow.png"
+dest_files=["res://.godot/imported/BasicArrow.png-956060f79278698666ede6b7dac59203.ctex"]
 
 [params]
 

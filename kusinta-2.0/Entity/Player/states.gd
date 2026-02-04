@@ -10,3 +10,5 @@ extends Node
 @onready var WallSlide = $WallSlide
 @onready var LedgeGrab = $LedgeGrab
 @onready var LedgeClimb = $LedgeClimb
+@onready var ChargeShot = $ChargeShot
+@onready var ReleaseShot = $ReleaseShot

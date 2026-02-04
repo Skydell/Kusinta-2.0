@@ -11,7 +11,7 @@ class_name PlayerCharacter extends CharacterBody2D
 @onready var JumpBufferTimer = $Timers/JumpBufferTimer
 @onready var CoyoteTimer = $Timers/CoyoteTimer
 @onready var WallJumpBufferTimer = $Timers/WallJumpBufferTimer
-@onready var SlideStaminaTimer = $Timers/SlideStaminaTimer
+@onready var ChargeBar = $ProgressBar
 
 @onready var Raycasts = $Raycasts
 @onready var RCWallJumpBottomLeft = $Raycasts/WallJump/WallJumpLeft
@@ -23,6 +23,10 @@ class_name PlayerCharacter extends CharacterBody2D
 @onready var RCLedgeGrabRightUpper = $Raycasts/LedgeGrab/LedgeRightUpper
 @onready var RCLedgeGrabLeftLower = $Raycasts/LedgeGrab/LedgeLeftLower
 @onready var RCLedgeGrabLeftUpper = $Raycasts/LedgeGrab/LedgeLeftUpper
+
+#For Arrow shooting
+@onready var ArrowPlacement = $ArrowPositionRight
+@onready var ArrowScene = preload("res://Entity/Arrow/arrow.tscn")
 
 # Used to get the tilemap for snapping
 @export var CollisionMap: TileMapLayer
@@ -45,11 +49,14 @@ const MAXNUMBEROFJUMPS = 1
 const JUMPBUFFERTIME = 0.15 # 9 frames: FPS / (desired frames) = time in seconds
 const COYOTETIME = 0.1  # 6 frames
 const WALLJUMPCOYOTETIME = 0.15 # 9 frames: FPS / (desired frames) = time in seconds
-const WALLSLIDESTAMINATIME = 0.8
 
 const WALLJUMPYSPEEDPEAK = 0 # Y speed at which the wall jump will end and change to fall
 const WALLJUMPVELOCITY = -220
 const WALLJUMPHSPEED = 120
+
+# Arrow Management
+const MAXARROWSINQUIVER = 10
+var remainingArrowsInQuiver = MAXARROWSINQUIVER
 
 var moveSpeed = RUNSPEED
 var jumpSpeed = JUMPSPEED
@@ -67,6 +74,8 @@ var keyRight = false
 var keyJump = false
 var KeyJumpPressed = false
 var KeyUpPressed = false
+var KeyMouseLeftClickHold = false
+var KeyMouseLeftClickRelease = false
 
 # State Machine
 var currentState: PlayerState = null
@@ -132,6 +141,8 @@ func GetInputStates():
 	keyJump = Input.is_action_pressed("KeyJump")
 	KeyJumpPressed = Input.is_action_just_pressed("KeyJump")
 	KeyUpPressed = Input.is_action_just_pressed("KeyUp")
+	KeyMouseLeftClickHold = Input.is_action_just_pressed("Shoot")
+	KeyMouseLeftClickRelease = Input.is_action_just_released("Shoot")
 	
 	if (keyRight): facing = 1
 	if (keyLeft): facing = -1
@@ -192,7 +203,6 @@ func HandleJump():
 			WallJumpBufferTimer.stop()
 			jumps += 1
 			ChangeState(States.Jump)
-		 
 
 func HandleJumpBuffer():
 	if (KeyJumpPressed):
