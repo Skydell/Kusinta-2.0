@@ -11,7 +11,6 @@ class_name PlayerCharacter extends CharacterBody2D
 @onready var JumpBufferTimer = $Timers/JumpBufferTimer
 @onready var CoyoteTimer = $Timers/CoyoteTimer
 @onready var WallJumpBufferTimer = $Timers/WallJumpBufferTimer
-@onready var ChargeBar = $ProgressBar
 
 @onready var Raycasts = $Raycasts
 @onready var RCWallJumpBottomLeft = $Raycasts/WallJump/WallJumpLeft
@@ -24,9 +23,8 @@ class_name PlayerCharacter extends CharacterBody2D
 @onready var RCLedgeGrabLeftLower = $Raycasts/LedgeGrab/LedgeLeftLower
 @onready var RCLedgeGrabLeftUpper = $Raycasts/LedgeGrab/LedgeLeftUpper
 
-#For Arrow shooting
-@onready var ArrowPlacement = $ArrowPositionRight
-@onready var ArrowScene = preload("res://Entity/Arrow/arrow.tscn")
+# Bow
+@onready var Bow : BowWeapon = $Bow
 
 # Used to get the tilemap for snapping
 @export var CollisionMap: TileMapLayer
@@ -54,10 +52,6 @@ const WALLJUMPYSPEEDPEAK = 0 # Y speed at which the wall jump will end and chang
 const WALLJUMPVELOCITY = -220
 const WALLJUMPHSPEED = 120
 
-# Arrow Management
-const MAXARROWSINQUIVER = 10
-var remainingArrowsInQuiver = MAXARROWSINQUIVER
-
 var moveSpeed = RUNSPEED
 var jumpSpeed = JUMPSPEED
 var moveDirectionX = 0
@@ -80,6 +74,9 @@ var KeyMouseLeftClickRelease = false
 # State Machine
 var currentState: PlayerState = null
 var previousState: PlayerState = null
+
+# Pausing game
+var cancelMotion: bool = false
 
 #endregion
 
@@ -105,7 +102,8 @@ func _physics_process(delta: float) -> void:
 	currentState.Update(delta)
 	
 	# Commit mouvement
-	move_and_slide()
+	if (!cancelMotion):
+		move_and_slide()
 
 func ChangeState(newState: PlayerState):
 	if (newState != null):
@@ -113,6 +111,7 @@ func ChangeState(newState: PlayerState):
 		currentState = newState
 		previousState.ExitState()
 		currentState.EnterState()
+		print("Player state next: "+currentState.Name+" previous state: "+previousState.Name)
 		# Not sure why we need to return here
 		return
 
@@ -124,6 +123,9 @@ func UpdateRaycasts():
 #endregion
 
 #region Custom Functions
+
+#func HandleRecallArrow():
+	#if (KeyMouse)
 
 func GetWallDirection():
 	if (RCWallJumpBottonRight.is_colliding()):

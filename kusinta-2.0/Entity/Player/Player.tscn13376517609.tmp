@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://cmtwed4vjiajx"]
+[gd_scene load_steps=32 format=3 uid="uid://cmtwed4vjiajx"]
 
 [ext_resource type="Script" uid="uid://dse5ohbrgdlm1" path="res://Entity/Player/player.gd" id="1_oklip"]
 [ext_resource type="Script" uid="uid://b57y8i603f1e0" path="res://Entity/Player/States/states.gd" id="3_rj2x4"]
@@ -11,8 +11,10 @@
 [ext_resource type="Script" uid="uid://dxobvkcamf4o7" path="res://Entity/Player/States/wallJumpState.gd" id="10_awppf"]
 [ext_resource type="Script" uid="uid://61lf2dkximkx" path="res://Entity/Player/States/wallSlideState.gd" id="11_jyegj"]
 [ext_resource type="Script" uid="uid://gyq7am8dpfx" path="res://Entity/Player/States/ledgeGrabState.gd" id="14_krolp"]
+[ext_resource type="Script" uid="uid://cys3s2mldvjf2" path="res://Entity/Player/States/releaseShotState.gd" id="14_pnyfx"]
+[ext_resource type="Script" uid="uid://cjnktdbsf5f2u" path="res://Entity/Player/States/chargeShotState.gd" id="14_u55sb"]
+[ext_resource type="Script" uid="uid://pf1iqefq4l02" path="res://Entity/Player/recallArrow.gd" id="15_pnyfx"]
 [ext_resource type="Script" uid="uid://b863ei4631hwr" path="res://Entity/Player/States/ledgeClimbState.gd" id="15_u55sb"]
-[ext_resource type="PackedScene" uid="uid://b8btkh4es2upm" path="res://Entity/Bow/bow.tscn" id="16_pnyfx"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_u55sb"]
 load_path = "res://.godot/imported/Character base.png-22db1b4e902a5cfc93fe8407e0ce4abf.ctex"
@@ -300,6 +302,10 @@ libraries = {
 &"": SubResource("AnimationLibrary_lf38l")
 }
 
+[node name="ArrowPositionRight" type="Marker2D" parent="."]
+position = Vector2(13, 8)
+rotation = 1.5707964
+
 [node name="Camera" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 
@@ -376,6 +382,15 @@ script = ExtResource("14_krolp")
 [node name="LedgeClimb" type="Node" parent="StateMachine"]
 script = ExtResource("15_u55sb")
 
+[node name="ChargeShot" type="Node" parent="StateMachine"]
+script = ExtResource("14_u55sb")
+
+[node name="ReleaseShot" type="Node" parent="StateMachine"]
+script = ExtResource("14_pnyfx")
+
+[node name="RecallArrow" type="Node" parent="StateMachine"]
+script = ExtResource("15_pnyfx")
+
 [node name="Timers" type="Node" parent="."]
 
 [node name="JumpBufferTimer" type="Timer" parent="Timers"]
@@ -387,7 +402,18 @@ one_shot = true
 [node name="WallJumpBufferTimer" type="Timer" parent="Timers"]
 one_shot = true
 
-[node name="Bow" parent="." instance=ExtResource("16_pnyfx")]
-position = Vector2(4, 8)
+[node name="ChargeLevel" type="Timer" parent="Timers"]
+one_shot = true
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = -25.0
+offset_top = -20.0
+offset_right = 25.0
+offset_bottom = -15.0
+max_value = 50.0
+rounded = true
+show_percentage = false
 
 [connection signal="animation_finished" from="Animator" to="StateMachine/LedgeClimb" method="_on_animator_animation_finished"]
+[connection signal="animation_finished" from="Animator" to="StateMachine/ChargeShot" method="_on_animator_animation_finished"]
+[connection signal="animation_finished" from="Animator" to="StateMachine/ReleaseShot" method="_on_animator_animation_finished"]

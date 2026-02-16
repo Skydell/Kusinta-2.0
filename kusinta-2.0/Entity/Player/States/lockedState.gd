@@ -2,6 +2,7 @@ extends PlayerState
 
 func EnterState():
 	Name = "Locked"
+	Player.cancelMotion = true
 
 func ExitState():
 	pass

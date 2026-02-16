@@ -18,14 +18,13 @@ func Update(delta: float):
 	HandleJumpToFall()
 	# JUMP -> WALL SLIDE
 	Player.HandleWallJump()
+	
 	HandleAnimations()
 
 func HandleJumpToFall():
 	if (Player.velocity.y >= 0):
-		#print("Reached Peak !")
 		Player.ChangeState(States.JumpPeak)
 	if (!Player.keyJump):
-		#print("Not pressing jump anymore")
 		Player.velocity.y *= Player.VARIABLEJUMPMULTIPLIER
 		Player.ChangeState(States.JumpPeak)
 

@@ -13,9 +13,13 @@ func EnterState():
 		Player.velocity.x = - wallMagnetSpeed
 	elif (Player.wallDirection == Vector2.RIGHT):
 		Player.velocity.x = wallMagnetSpeed
+	# Hide bow while wall Sliding
+	Player.Bow.Disable()
 
 func ExitState():
 	Player.CoyoteTimer.start(Player.WALLJUMPCOYOTETIME)
+	# Show bow after Wall Slide
+	Player.Bow.Enable()
 
 func Draw():
 	pass

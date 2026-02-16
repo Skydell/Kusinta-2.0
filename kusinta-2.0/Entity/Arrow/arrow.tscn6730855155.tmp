@@ -1,15 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://c7a15vqvij1sc"]
+[gd_scene load_steps=8 format=3 uid="uid://c7a15vqvij1sc"]
 
 [ext_resource type="Script" uid="uid://dqo2ip2iddhtb" path="res://Entity/Arrow/arrow.gd" id="1_du3uu"]
-[ext_resource type="Texture2D" uid="uid://cl2ci4k2s3j5t" path="res://Resources/bow-and-arrow-Sheet.png" id="2_8m8lf"]
+[ext_resource type="Texture2D" uid="uid://d1o8h7mfde22l" path="res://Resources/BasicArrow.png" id="2_du3uu"]
 [ext_resource type="Script" uid="uid://m5arwk7jo867" path="res://Entity/Arrow/States/arrowStates.gd" id="3_bd6a2"]
 [ext_resource type="Script" uid="uid://cxv3ny0c1wfig" path="res://Entity/Arrow/States/forwardMotionState.gd" id="4_8m8lf"]
 [ext_resource type="Script" uid="uid://cdf5eae74gmy5" path="res://Entity/Arrow/States/idleState.gd" id="5_ygmug"]
 [ext_resource type="Script" uid="uid://cgyvahsme8l6d" path="res://Entity/Arrow/States/backToPlayerMotionState.gd" id="6_boh35"]
-[ext_resource type="Script" uid="uid://d0fo1yvko30w4" path="res://Entity/Arrow/States/initialState.gd" id="7_8m8lf"]
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_i8dt4"]
-points = PackedVector2Array(2, -3, 7, -1, 7, 1, 2, 3)
+points = PackedVector2Array(4, -3, 7, -1, 7, 0, 4, 2)
 
 [node name="Arrow" type="CharacterBody2D"]
 collision_layer = 4
@@ -20,11 +19,8 @@ position = Vector2(-7, 0)
 shape = SubResource("ConvexPolygonShape2D_i8dt4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-texture = ExtResource("2_8m8lf")
-offset = Vector2(-11, 0)
-hframes = 8
-frame = 6
+texture = ExtResource("2_du3uu")
+offset = Vector2(-7, 0)
 
 [node name="ArrowStateMachine" type="Node" parent="."]
 script = ExtResource("3_bd6a2")
@@ -37,6 +33,3 @@ script = ExtResource("5_ygmug")
 
 [node name="BackToPlayerMotion" type="Node" parent="ArrowStateMachine"]
 script = ExtResource("6_boh35")
-
-[node name="InitialState" type="Node" parent="ArrowStateMachine"]
-script = ExtResource("7_8m8lf")

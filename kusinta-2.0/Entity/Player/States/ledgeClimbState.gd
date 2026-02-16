@@ -10,14 +10,17 @@ func EnterState():
 	
 	# Get Ledge Direction
 	if (Player.RCLedgeGrabLeftLower.is_colliding()):
-		Player.ledgeDiection == Vector2.LEFT
+		Player.ledgeDiection = Vector2.LEFT
 	elif (Player.RCLedgeGrabRightLower.is_colliding()):
-		Player.ledgeDiection == Vector2.RIGHT
+		Player.ledgeDiection = Vector2.RIGHT
 	
 	ledgeGrabFinalPosition = Vector2(ledgeFinalPositionX * Player.ledgeDiection.x, ledgeFinalPositionY)
-
+	# Hide bow while ledge grabing
+	Player.Bow.Disable()
+	
 func ExitState():
-	pass
+	# Show bow when exiting state
+	Player.Bow.Enable()
 
 func Draw():
 	pass

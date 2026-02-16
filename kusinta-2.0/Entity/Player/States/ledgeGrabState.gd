@@ -36,9 +36,12 @@ func EnterState():
 	
 	ledgeGrabSnapPosition = Vector2(cornerGrabPosition.x + (Player.ledgeDiection.x * -1), cornerGrabPosition.y + ledgeGrabSnapY)
 	Player.global_position = ledgeGrabSnapPosition
+	# Hide bow while ledge grabing
+	Player.Bow.Disable()
 
 func ExitState():
-	pass
+	# Show bow when exiting state
+	Player.Bow.Enable()
 
 func Draw():
 	pass

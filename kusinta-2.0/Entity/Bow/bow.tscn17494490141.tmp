@@ -1,0 +1,137 @@
+[gd_scene load_steps=15 format=3 uid="uid://b8btkh4es2upm"]
+
+[ext_resource type="Script" uid="uid://b3rpqa038tt3i" path="res://Entity/Bow/bow.gd" id="1_3crss"]
+[ext_resource type="Texture2D" uid="uid://cl2ci4k2s3j5t" path="res://Resources/bow-and-arrow-Sheet.png" id="2_e281f"]
+[ext_resource type="Script" uid="uid://pxbccmr755t8" path="res://Entity/Bow/States/bowStateMachine.gd" id="2_ng3wb"]
+[ext_resource type="Script" uid="uid://b0l6u3yfx782j" path="res://Entity/Bow/States/idleState.gd" id="3_e281f"]
+[ext_resource type="Script" uid="uid://ce24l771v4w46" path="res://Entity/Bow/States/chargeState.gd" id="4_bnutf"]
+[ext_resource type="Script" uid="uid://dtq33f7wrbqha" path="res://Entity/Bow/States/releaseState.gd" id="5_1o6oo"]
+[ext_resource type="Script" uid="uid://7n7lg7qgi8tw" path="res://Entity/Bow/States/disableState.gd" id="7_bnutf"]
+[ext_resource type="Script" uid="uid://rnav182muwvu" path="res://Entity/Bow/States/recallState.gd" id="8_1o6oo"]
+
+[sub_resource type="Animation" id="Animation_1o6oo"]
+resource_name = "Charge"
+length = 0.5
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_m3rlq"]
+resource_name = "Charged"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+
+[sub_resource type="Animation" id="Animation_e281f"]
+resource_name = "Idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_bnutf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_io7iw"]
+resource_name = "Release"
+length = 0.02
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_io7iw"]
+_data = {
+&"Charge": SubResource("Animation_1o6oo"),
+&"Charged": SubResource("Animation_m3rlq"),
+&"Idle": SubResource("Animation_e281f"),
+&"RESET": SubResource("Animation_bnutf"),
+&"Release": SubResource("Animation_io7iw")
+}
+
+[node name="Bow" type="Node2D"]
+script = ExtResource("1_3crss")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_e281f")
+hframes = 8
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_io7iw")
+}
+
+[node name="State Machine" type="Node" parent="."]
+script = ExtResource("2_ng3wb")
+
+[node name="Idle" type="Node" parent="State Machine"]
+script = ExtResource("3_e281f")
+
+[node name="Charge" type="Node" parent="State Machine"]
+script = ExtResource("4_bnutf")
+
+[node name="Release" type="Node" parent="State Machine"]
+script = ExtResource("5_1o6oo")
+
+[node name="Disable" type="Node" parent="State Machine"]
+script = ExtResource("7_bnutf")
+
+[node name="Recall" type="Node" parent="State Machine"]
+script = ExtResource("8_1o6oo")
+
+[node name="Arrow Placement" type="Marker2D" parent="."]
+position = Vector2(8, 0)
+
+[connection signal="animation_finished" from="AnimationPlayer" to="State Machine/Charge" method="_on_animation_player_animation_finished"]
+[connection signal="animation_finished" from="AnimationPlayer" to="State Machine/Release" method="_on_animation_player_animation_finished"]

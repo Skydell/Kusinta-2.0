@@ -24,9 +24,9 @@ func Update(delta: float):
 	Player.HandleWallJump()
 	# FALL -> WALL SLIDE
 	Player.HandleWallSlide()
-	# Falls -> LEDGE GRAB
+	# FALL -> LEDGE GRAB
 	Player.HandleLedgeGrab()
-
+	
 	HandleAnimations()
 
 func HandleAnimations():
