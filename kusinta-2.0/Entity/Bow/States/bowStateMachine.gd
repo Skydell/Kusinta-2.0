@@ -5,3 +5,4 @@ extends Node
 @onready var Idle = $Idle
 @onready var Disable = $Disable
 @onready var Recall = $Recall
+@onready var ChooseArrowToRecall = $ChooseArrowToRecall

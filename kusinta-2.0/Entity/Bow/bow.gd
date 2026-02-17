@@ -10,7 +10,7 @@ class_name BowWeapon extends Node2D
 var ArrowList: Array[ArrowProjectile] = []
 
 # Arrow Management
-const MAXARROWSINQUIVER = 1
+const MAXARROWSINQUIVER = 10
 var remainingArrowsInQuiver = MAXARROWSINQUIVER
 
 # State Machine
@@ -22,7 +22,6 @@ var KeyMouseLeftClickHold = false
 var KeyMouseLeftClickRelease = false
 var KeyMouseRightClickPressed = false
 
-
 func _ready() -> void:
 	# Initialize State Machine
 	for state in BowStates.get_children():
@@ -30,7 +29,6 @@ func _ready() -> void:
 		state.Bow = self
 	previousState = BowStates.Idle
 	currentState = BowStates.Idle
-	print("Is instanciated")
 
 func _draw() -> void :
 	currentState.Draw()
@@ -49,7 +47,7 @@ func ChangeState(newState: BowState):
 		currentState = newState
 		previousState.ExitState()
 		currentState.EnterState()
-		print("Bow States current: "+currentState.Name+" previous state: "+previousState.Name)
+		print("Bow State : "+currentState.Name + " with Older state: "+ previousState.Name)
 		# Not sure why we need to return here
 		return
 
@@ -68,4 +66,4 @@ func Enable():
 
 func HandleRecall():
 	if (KeyMouseRightClickPressed):
-		ChangeState(BowStates.Recall)
+		ChangeState(BowStates.ChooseArrowToRecall)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b8btkh4es2upm"]
+[gd_scene load_steps=16 format=3 uid="uid://b8btkh4es2upm"]
 
 [ext_resource type="Script" uid="uid://b3rpqa038tt3i" path="res://Entity/Bow/bow.gd" id="1_3crss"]
 [ext_resource type="Texture2D" uid="uid://cl2ci4k2s3j5t" path="res://Resources/bow-and-arrow-Sheet.png" id="2_e281f"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtq33f7wrbqha" path="res://Entity/Bow/States/releaseState.gd" id="5_1o6oo"]
 [ext_resource type="Script" uid="uid://7n7lg7qgi8tw" path="res://Entity/Bow/States/disableState.gd" id="7_bnutf"]
 [ext_resource type="Script" uid="uid://rnav182muwvu" path="res://Entity/Bow/States/recallState.gd" id="8_1o6oo"]
+[ext_resource type="Script" uid="uid://208ir1ay8ouk" path="res://Entity/Bow/chooseArrowToRecallState.gd" id="9_io7iw"]
 
 [sub_resource type="Animation" id="Animation_1o6oo"]
 resource_name = "Charge"
@@ -103,7 +104,6 @@ script = ExtResource("1_3crss")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_e281f")
 hframes = 8
 
@@ -130,8 +130,11 @@ script = ExtResource("7_bnutf")
 [node name="Recall" type="Node" parent="State Machine"]
 script = ExtResource("8_1o6oo")
 
+[node name="ChooseArrowToRecall" type="Node" parent="State Machine"]
+script = ExtResource("9_io7iw")
+
 [node name="Arrow Placement" type="Marker2D" parent="."]
-position = Vector2(8, 0)
+position = Vector2(14, 0)
 
 [connection signal="animation_finished" from="AnimationPlayer" to="State Machine/Charge" method="_on_animation_player_animation_finished"]
 [connection signal="animation_finished" from="AnimationPlayer" to="State Machine/Release" method="_on_animation_player_animation_finished"]

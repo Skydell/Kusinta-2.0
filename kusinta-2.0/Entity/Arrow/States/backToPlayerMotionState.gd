@@ -11,3 +11,4 @@ func Draw():
 
 func Update(delta: float):
 	Arrow.HandleMouvementBackward()
+	Arrow.HandleCollision()

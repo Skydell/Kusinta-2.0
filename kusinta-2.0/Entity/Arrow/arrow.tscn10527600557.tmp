@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c7a15vqvij1sc"]
+[gd_scene load_steps=10 format=3 uid="uid://c7a15vqvij1sc"]
 
 [ext_resource type="Script" uid="uid://dqo2ip2iddhtb" path="res://Entity/Arrow/arrow.gd" id="1_du3uu"]
 [ext_resource type="Texture2D" uid="uid://cl2ci4k2s3j5t" path="res://Resources/bow-and-arrow-Sheet.png" id="2_8m8lf"]
@@ -10,49 +10,6 @@
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_i8dt4"]
 points = PackedVector2Array(5, -1, 6, 0, 6, 1, 5, 2, 2, 3, 2, -2)
-
-[sub_resource type="Shader" id="Shader_8m8lf"]
-code = "shader_type canvas_item;
-uniform vec4 outline_color: source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform bool corner_pixel = false;
-
-void vertex() {
-	// Called for every vertex the material is visible on.
-}
-
-void fragment() {
-	vec4 base = texture(TEXTURE, UV);
-	if (base.a > 0.0) {
-		COLOR = base;
-	} else {
-		vec2 image_pixel_size = TEXTURE_PIXEL_SIZE;
-		bool valid_side = 
-			texture(TEXTURE, UV + vec2(-image_pixel_size.x, 0)).a > 0.0 ||
-			texture(TEXTURE, UV + vec2(image_pixel_size.x, 0)).a > 0.0 ||
-			texture(TEXTURE, UV + vec2(0, -image_pixel_size.y)).a > 0.0 ||
-			texture(TEXTURE, UV + vec2(0, image_pixel_size.y)).a > 0.0;
-		bool valid_corner = 
-			texture(TEXTURE, UV + vec2(-image_pixel_size.x, -image_pixel_size.y)).a > 0.0 ||
-			texture(TEXTURE, UV + vec2(image_pixel_size.x, -image_pixel_size.y)).a > 0.0 ||
-			texture(TEXTURE, UV + vec2(-image_pixel_size.x, image_pixel_size.y)).a > 0.0 ||
-			texture(TEXTURE, UV + vec2(image_pixel_size.x, image_pixel_size.y)).a > 0.0;
-		
-		if (valid_side || (corner_pixel && valid_corner)) {
-			COLOR = outline_color;
-		}
-	}
-}
-
-//void light() {
-//	// Called for every pixel for every light affecting the CanvasItem.
-//	// Uncomment to replace the default light processing function with this one.
-//}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_boh35"]
-shader = SubResource("Shader_8m8lf")
-shader_parameter/outline_color = Color(1, 1, 1, 1)
-shader_parameter/corner_pixel = false
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8m8lf"]
 size = Vector2(15, 3)
@@ -67,16 +24,6 @@ shape = SubResource("ConvexPolygonShape2D_i8dt4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-texture = ExtResource("2_8m8lf")
-offset = Vector2(-11, 0)
-hframes = 8
-frame = 6
-
-[node name="Outline" type="Sprite2D" parent="Sprite2D"]
-visible = false
-show_behind_parent = true
-texture_filter = 1
-material = SubResource("ShaderMaterial_boh35")
 texture = ExtResource("2_8m8lf")
 offset = Vector2(-11, 0)
 hframes = 8

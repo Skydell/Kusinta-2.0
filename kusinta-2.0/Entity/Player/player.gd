@@ -111,7 +111,6 @@ func ChangeState(newState: PlayerState):
 		currentState = newState
 		previousState.ExitState()
 		currentState.EnterState()
-		print("Player state next: "+currentState.Name+" previous state: "+previousState.Name)
 		# Not sure why we need to return here
 		return
 
@@ -123,9 +122,6 @@ func UpdateRaycasts():
 #endregion
 
 #region Custom Functions
-
-#func HandleRecallArrow():
-	#if (KeyMouse)
 
 func GetWallDirection():
 	if (RCWallJumpBottonRight.is_colliding()):
